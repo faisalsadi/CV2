@@ -22,41 +22,90 @@ def read_file(file_path):
 
 
 # Press the green button in the gutter to run the script.
-
-
-imageR = cv2.imread("Data/set_1/im_right.jpg",cv2.IMREAD_GRAYSCALE)
-imageL = cv2.imread("Data/set_1/im_right.jpg", cv2.IMREAD_GRAYSCALE)
-
-k=5
-disparity(imageL,imageR,k, file_content = read_file('Data/set_1/max_disp.txt'))
-
-
-     # matrix = np.array([[1, 2, 3, 4],
-    #                    [5, 6, 7, 8],
-    #                    [9, 10, 11, 12]])
+if __name__ == '__main__':
+    # # Read the array from file
+    # array = np.loadtxt("example/disp_right.txt", delimiter=',')
     #
-    # k = 3
+    # # Convert the array to an image
+    # imager = (array / np.max(array)) * 255
+    # imager = imager.astype(np.uint8)
+    #
+    # # Read the array from file
+    # array = np.loadtxt('example/disp_left.txt', delimiter=',')
+    #
+    # # Convert the array to an image
+    # imagel = (array / np.max(array)) * 255
+    # imagel = imagel.astype(np.uint8)
+    # # Read the array from file
+    # array = np.loadtxt('example/depth_right.txt', delimiter=',')
+    #
+    # # Convert the array to an image
+    # imagedr = (array / np.max(array)) * 255
+    # imagedr = imagedr.astype(np.uint8)
+    # # Read the array from file
+    # array = np.loadtxt('example/depth_left.txt', delimiter=',')
+    #
+    # # Convert the array to an image
+    # imagedl = (array / np.max(array)) * 255
+    # imagedl = imagedl.astype(np.uint8)
+    #
+    # # Save the image to disk
+    #
+    # cv2.imwrite("set_1/dis_left.jpg", imagel)
+    # cv2.imwrite("set_1/dis_right.jpg", imager)
+    # cv2.imwrite("set_1/depth_left.jpg", imagedl )
+    # cv2.imwrite("set_1/depth_right.jpg", imagedr *255)
+
+    # # example
+    # imageR = cv2.imread("Data/example/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("Data/example/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    #
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # l=disparity(imageL,imageR,k=5, file_content = read_file('Data/example/max_disp.txt'),kernel_size=25,path="Data/example/")
+    # print(l)
+
+    # set1
+    imageR = cv2.imread("Data/set_1/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    imageL = cv2.imread("Data/set_1/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+
+    #example k=5 kernel=25
+    #set 1 k=5\7 kernel=41
+    disparity(imageL,imageR,k=5, file_content = read_file('Data/set_1/max_disp.txt'),kernel_size=41,path="Data/set_1/")
+
+    # # set2
+    # imageR = cv2.imread("set_2/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("set_2/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # disparity(imageL,imageR,k=5, file_content = read_file('set_2/max_disp.txt'),kernel_size=25,path="set2/")
+
+
+    # set3
+    # imageR = cv2.imread("set_3/im_right.jpg" ,cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("set_3/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # disparity(imageL,imageR,k=5, file_content = read_file('set_3/max_disp.txt'),kernel_size=25,path="set3/")
+
 
     #
+    # # set4
     #
-    # print(k_values)
-    # #
-    # # הגדרת המטריצה
-    # matrix =  np.array([[688.000061035156, 0,511.5],
-    #                    [0, 688.000061035156, 217.5]])
-    # matrix[:,:]*=2
-    # print(matrix)
+    # imageR = cv2.imread("set_4/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("set_4/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # disparity(imageL,imageR,k=5, file_content = read_file('set_4/max_disp.txt'),kernel_size=25,path="set_4/")
     #
-    # # כפל איבר-איבר בין התמונה ובין המטריצה
-    # effective_matrix = image.astype(np.float32)
-    # for c in range(3):
-    #     d=c//2
-    #     x=c%2
-    #     effective_matrix[:, :, c] *= matrix[d, c]
-    #     print(d,x,c)
     #
-    # # הצגת התוצאה
-    # effective_matrix = effective_matrix.astype(np.uint8)
-    # cv2.imshow('Result', effective_matrix)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    #
+    # # set5
+    # imageR = cv2.imread("set_5/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("set_5/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # disparity(imageL,imageR,k=5, file_content = read_file('set_5/max_disp.txt'),kernel_size=25,path="set_5/")
+
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/

@@ -1,4 +1,7 @@
+import cv2
 import numpy as np
+from scipy.signal import convolve2d
+
 
 def xor(array1,array2):
     result=np.bitwise_xor(array1,array2)
@@ -10,10 +13,13 @@ def xor(array1,array2):
     return count
 
 
+
+
+
 def censusTransform(matrix, k):
     n = matrix.shape[0]
     m = matrix.shape[1]
-    k_values = np.zeros((n, m, k*k))
+    k_values = np.zeros((n, m),dtype=object)
     for i in range(n):
         for j in range(m):
             if i+k//2>=n-1:
@@ -40,47 +46,165 @@ def censusTransform(matrix, k):
                     else:
                         submatrix[x][y]=0
             victor = submatrix.reshape(k*k)
-            k_values[i, j ] = victor
+            k_values[i, j] = victor
 
     return k_values
 
 
-
-def costVolume(victorL,victorR,file_content):
+# from lift to right image(lift is the maain picture)
+def costVolumeLR(victorL,victorR,file_content):
     n=victorL.shape[0]
     m=victorL.shape[1]
     file_content=int(file_content)
-    victor=np.zeros((n,m,file_content))
+    victor=np.zeros((n,m, file_content))
+    # victor[:][:][:]=-1
     for i in range(n):
         for j in range(m):
-            for x in range(file_content):
-                start_row=max(0,j-file_content)
-                for k in range(start_row,j+1):
-                    vL=victorL[i][j].astype(int)
-                    vR=victorR[i][k].astype(int)
-                    count=xor(vL,vR)
-                    victor[i][j]=count
-
+            vL = victorL[i][j].astype(int)
+            # start_row=max(0,j-file_content)
+            x=0
+            for k in range(file_content):
+                    if j-k>=0:
+                        vR=victorR[i][j-k].astype(int)
+                        count=xor(vL,vR)
+                        victor[i][j][k]=count
+                        # x+=1
+                    else:
+                        victor[i][j][k]=file_content
+            # for z in range(x, file_content):
+            #     victor[i][j][z] = float('inf')
     return victor
-def disparity(imageL,imageR,k,file_content):
 
+# from right to lift image(right is the maain picture)
+
+def costVolumeRL(victorR,victorL,file_content):
+    n=victorR.shape[0]
+    m=victorR.shape[1]
+    file_content=int(file_content)
+    victor=np.zeros((n,m, file_content))
+    for i in range(n):
+        for j in range(m):
+            vR = victorR[i][j].astype(int)
+            # start_row=max(0,j-file_content)
+            x=0
+            for k in range(file_content):
+                    if j+k<m:
+                        vL=victorL[i][j+k].astype(int)
+                        count=xor(vL,vR)
+                        victor[i][j][k]=count
+                        # x+=1
+                    else:
+                        victor[i][j][k]=file_content
+            # for z in range(x, file_content):
+            #     victor[i][j][z] = float('inf')
+    return victor
+
+
+
+def filterAv(matrix,maxDis,kernel_size):
+    maxDis=int(maxDis)
+    kernel = np.ones((kernel_size, kernel_size), dtype=np.float32) / (kernel_size ** 2)
+
+    for d in range(maxDis):
+
+        matrix[:, :, d] = cv2.filter2D(matrix[:, :, d], -1, kernel)
+        # print(matrix[:][:][d])
+
+    return matrix
+
+def minMat(matrix,maxdis):
+    maxdis=int(maxdis)
+    n, m = matrix.shape[0],matrix.shape[1]
+    array=np.zeros((n, m))
+    for i in range(n):
+        for j in range(m):
+            min = matrix[i][j][0]
+            min_index = 0
+            for d in range(maxdis):
+                if matrix[i][j][d] < min:
+                    min = matrix[i][j][d]
+                    min_index = d
+            array[i][j] = min_index
+
+    return array
+
+def consistency_testLR(disparity_left, disparity_right, max_difference=1):
+    height, width = disparity_left.shape
+    disparity = np.zeros_like(disparity_left)
+
+    for y in range(height):
+        for x in range(width):
+            disparity_l = int(disparity_left[y, x])
+            if x - disparity_l >= 0:
+                disparity_r = disparity_right[y, x - disparity_l]
+                diff = np.abs(disparity_l - disparity_r)
+                if diff < max_difference:
+                    disparity[y, x] = disparity_left[y, x]
+    return disparity
+
+def consistency_testRL(disparity_right, disparity_left, max_difference=1):
+    height = disparity_left.shape[0]
+    width=disparity_left.shape[1]
+    disparity = np.zeros_like(disparity_left)
+
+    for y in range(height):
+        for x in range(width):
+            disparity_r = int(disparity_right[y, x])
+            if x + disparity_r < width:
+                disparity_l = disparity_left[y, x + disparity_r]
+                diff = np.abs(disparity_r - disparity_l)
+                if diff < max_difference:
+                    disparity[y, x] = disparity_right[y, x]
+    return disparity
+
+def depth(image,baseline=0.1):
+    height, width = image.shape
+    for i in range(height):
+        for j in range(width):
+            if image[i][j]!=0:
+                image[i][j]=baseline/image[i][j]
+    return image
+
+
+def disparity(imageL,imageR,k,file_content,kernel_size,path):
     victorL=censusTransform(imageL,k)
     victorR=censusTransform(imageR,k)
-    victorLR=costVolume(victorL,victorR,file_content)
-    print(victorLR)
+#from right image to left
+    victorRL = costVolumeRL(victorR, victorL, file_content)
+    filterR=filterAv(victorRL,file_content,kernel_size)
+    minArrayR=minMat(filterR,file_content)
 
-    # print(victorL[0][0])
-    # array=np.array(victorL[0][0])
-    # print(array)
-    # array=array.astype(int)
-    # # count=xor(victorL[0][0][:],victorR[0][0][:])
-    # # print(count)
-    # #print(victorLR)
-    # # print(victorL[0][0][0])
-    # # print(file_content)
-    # array2=np.array(victorR[0][0])
-    # array2=array2.astype(int)
-    # # array2 = np.array([1,1 ,0 ,1, 0])
-    # print(array2)
-    # # array = np.array([1,1 ,1 ,1, 0])
-    # c=xor(array,array2)
+# #from left image to right
+    victorLR = costVolumeLR(victorL, victorR, file_content)
+    filterL=filterAv(victorLR,file_content,kernel_size)
+    minArrayL=minMat(filterL,file_content)
+    disp_left=consistency_testLR(minArrayL,minArrayR,1)
+    disp_right=consistency_testRL(minArrayR,minArrayL,1)
+
+    depth_right=depth(disp_right/np.max(disp_right),0.1)
+    depth_lift=depth(disp_left/np.max(disp_left) ,0.1)
+    print(0)
+
+
+
+    # # cv2.imshow('dis', minArrayR/np.max(minArrayR))
+    # cv2.imshow('dis_left',disp_left/np.max(disp_left))
+    #
+    # cv2.imshow('dis_right',disp_right/np.max(disp_right))
+    # cv2.imshow('depth_right',depth_right)
+    # cv2.imshow('depth_left',depth_lift)
+    #
+    #
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+
+    # cv2.imwrite(path+"dis_left.jpg", disp_left/np.max(disp_left))
+    # cv2.imwrite(path + "dis_right.jpg", disp_right)
+    #
+    # cv2.imwrite(path + "depth_left.jpg", depth_lift*255)
+    # cv2.imwrite(path + "depth_right.jpg", depth_right)
+    # Save the matrix as a text file
+    np.savetxt(path+'depth_left.txt', depth_lift,delimiter=',')
+
+

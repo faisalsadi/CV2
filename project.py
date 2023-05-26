@@ -157,16 +157,16 @@ def consistency_testRL(disparity_right, disparity_left, max_difference=1):
     return disparity
 
 
-def depth(image, baseline=0.1):
-    height, width = image.shape
+def depth(disparity,f, baseline=0.1):
+    height, width = disparity.shape
     for i in range(height):
         for j in range(width):
-            if image[i][j] != 0:
-                image[i][j] = baseline / image[i][j]
-    return image
+            if disparity[i][j] != 0:
+                disparity[i][j] = f*baseline / disparity[i][j]
+    return disparity
 
 
-def disparity(imageL, imageR, k, file_content, kernel_size, path):
+def disparity(imageL, imageR, k, file_content, kernel_size, path,f):
     victorL = censusTransform(imageL, k)
     victorR = censusTransform(imageR, k)
     # from right image to left
@@ -181,8 +181,10 @@ def disparity(imageL, imageR, k, file_content, kernel_size, path):
     disp_left = consistency_testLR(minArrayL, minArrayR, 1)
     disp_right = consistency_testRL(minArrayR, minArrayL, 1)
 
-    depth_right = depth(disp_right / np.max(disp_right), 0.1)
-    depth_lift = depth(disp_left / np.max(disp_left), 0.1)
+    # depth_right = depth(disp_right / np.max(disp_right), 0.1)
+    # depth_lift = depth(disp_left / np.max(disp_left), 0.1)
+    depth_right = depth(disp_right ,f, 0.1)
+    depth_lift = depth(disp_left , f,0.1)
 
     # # cv2.imshow('dis', minArrayR/np.max(minArrayR))
     # cv2.imshow('dis_left',disp_left/np.max(disp_left))
@@ -195,12 +197,14 @@ def disparity(imageL, imageR, k, file_content, kernel_size, path):
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    cv2.imwrite(path + "dis_left.jpg", disp_left)
-    cv2.imwrite(path + "dis_right.jpg", disp_right)
-
-    cv2.imwrite(path + "depth_left.jpg", depth_lift * 255)
-    cv2.imwrite(path + "depth_right.jpg", depth_right * 255)
+    # cv2.imwrite(path + "dis_left.jpg", disp_left)
+    # cv2.imwrite(path + "dis_right.jpg", disp_right)
     #
+    # cv2.imwrite(path + "depth_left.jpg", depth_lift * 255)
+    # cv2.imwrite(path + "depth_right.jpg", depth_right * 255)
+    #
+    np.savetxt(path+'depth_left.txt',depth_lift,delimiter=',')
+    np.savetxt(path+'depth_right.txt',depth_right,delimiter=',')
 
 
 

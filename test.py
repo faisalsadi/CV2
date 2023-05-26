@@ -56,48 +56,55 @@ if __name__ == '__main__':
     # cv2.imwrite("set_1/depth_left.jpg", imagedl )
     # cv2.imwrite("set_1/depth_right.jpg", imagedr *255)
 
+    # # example
+    # imageR = cv2.imread("Data/example/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("Data/example/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    #
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # disparity(imageL,imageR,k=5, file_content = read_file('Data/example/max_disp.txt'),kernel_size=25,path="Data/example/",f=576)
 
-    # set1
-    imageR = cv2.imread("set_1/im_right.jpg",cv2.IMREAD_GRAYSCALE)
-    imageL = cv2.imread("set_1/im_left.jpg", cv2.IMREAD_GRAYSCALE)
-
-    #example k=5 kernel=25
-    #set 1 k=5\7 kernel=41
-    disparity(imageL,imageR,k=5, file_content = read_file('set_1/max_disp.txt'),kernel_size=41,path="set_1/")
+    # # set1
+    # imageR = cv2.imread("Data/set_1/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    # imageL = cv2.imread("Data/set_1/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    #
+    # #example k=5 kernel=25
+    # #set 1 k=5\7 kernel=41
+    # disparity(imageL,imageR,k=5, file_content = read_file('Data/set_1/max_disp.txt'),kernel_size=41,path="Data/set_1/",f=688.000061035156)
 
     # set2
-    imageR = cv2.imread("set_2/im_right.jpg",cv2.IMREAD_GRAYSCALE)
-    imageL = cv2.imread("set_2/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    imageR = cv2.imread("Data/set_2/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    imageL = cv2.imread("Data/set_2/im_left.jpg", cv2.IMREAD_GRAYSCALE)
     #example k=5 kernel=25
     #set 1 k=5\7 kernel=41
-    disparity(imageL,imageR,k=5, file_content = read_file('set_2/max_disp.txt'),kernel_size=42,path="set_2/")
-    print(0)
+    disparity(imageL,imageR,k=5, file_content = read_file('Data/set_2/max_disp.txt'),kernel_size=42,path="Data/set_2/",f=1120)
+    print(2)
 
     #set3
-    imageR = cv2.imread("set_3/im_right.jpg" ,cv2.IMREAD_GRAYSCALE)
-    imageL = cv2.imread("set_3/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    imageR = cv2.imread("Data/set_3/im_right.jpg" ,cv2.IMREAD_GRAYSCALE)
+    imageL = cv2.imread("Data/set_3/im_left.jpg", cv2.IMREAD_GRAYSCALE)
     #example k=5 kernel=25
     #set 1 k=5\7 kernel=41
-    disparity(imageL,imageR,k=5, file_content = read_file('set_3/max_disp.txt'),kernel_size=25,path="set_3/")
-
+    disparity(imageL,imageR,k=5, file_content = read_file('Data/set_3/max_disp.txt'),kernel_size=25,path="Data/set_3/",f=800)
+    print(3)
 
 
     # set4
 
-    imageR = cv2.imread("set_4/im_right.jpg",cv2.IMREAD_GRAYSCALE)
-    imageL = cv2.imread("set_4/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    imageR = cv2.imread("Data/set_4/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    imageL = cv2.imread("Data/set_4/im_left.jpg", cv2.IMREAD_GRAYSCALE)
     #example k=5 kernel=25
     #set 1 k=5\7 kernel=41
-    disparity(imageL,imageR,k=5, file_content = read_file('set_4/max_disp.txt'),kernel_size=45,path="set_4/")
-
+    disparity(imageL,imageR,k=5, file_content = read_file('Data/set_4/max_disp.txt'),kernel_size=45,path="Data/set_4/",f=896)
+    print(4)
 
 
     # set5
-    imageR = cv2.imread("set_5/im_right.jpg",cv2.IMREAD_GRAYSCALE)
-    imageL = cv2.imread("set_5/im_left.jpg", cv2.IMREAD_GRAYSCALE)
+    imageR = cv2.imread("Data/set_5/im_right.jpg",cv2.IMREAD_GRAYSCALE)
+    imageL = cv2.imread("Data/set_5/im_left.jpg", cv2.IMREAD_GRAYSCALE)
     #example k=5 kernel=25
     #set 1 k=5\7 kernel=41
-    disparity(imageL,imageR,k=5, file_content = read_file('set_5/max_disp.txt'),kernel_size=30,path="set_5/")
-
+    disparity(imageL,imageR,k=5, file_content = read_file('Data/set_5/max_disp.txt'),kernel_size=30,path="Data/set_5/",f=689.029357910156)
+    print(5)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
